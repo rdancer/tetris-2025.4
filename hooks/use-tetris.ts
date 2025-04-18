@@ -4,12 +4,19 @@ import { useState, useEffect, useCallback } from "react"
 import { createBoard, checkCollision, createPreviewBoard, randomTetromino } from "@/lib/game-helpers"
 import { rotate } from "@/lib/tetrominos"
 
+// Define the structure for our game data in localStorage
+interface GameData {
+  highScore: number
+  // We can add more fields here in the future
+}
+
 export const useTetris = () => {
   // Game state
   const [board, setBoard] = useState(createBoard)
   const [gameOver, setGameOver] = useState(true)
   const [paused, setPaused] = useState(false)
   const [score, setScore] = useState(0)
+  const [highScore, setHighScore] = useState(0)
   const [level, setLevel] = useState(1)
   const [lines, setLines] = useState(0)
 
@@ -23,6 +30,42 @@ export const useTetris = () => {
 
   // Game speed
   const [dropTime, setDropTime] = useState(null)
+
+  // Load game data from localStorage on initial render
+  useEffect(() => {
+    try {
+      const savedData = localStorage.getItem("tetrisGameData")
+      if (savedData) {
+        const gameData: GameData = JSON.parse(savedData)
+        setHighScore(gameData.highScore || 0)
+      }
+    } catch (error) {
+      console.error("Error loading game data:", error)
+      // If there's an error, we'll just use the default values
+    }
+  }, [])
+
+  // Update high score when game ends
+  useEffect(() => {
+    if (gameOver && score > highScore) {
+      const newHighScore = score
+      setHighScore(newHighScore)
+
+      try {
+        // Get existing data or create new object
+        const existingData = localStorage.getItem("tetrisGameData")
+        const gameData: GameData = existingData ? JSON.parse(existingData) : { highScore: 0 }
+
+        // Update high score
+        gameData.highScore = newHighScore
+
+        // Save back to localStorage
+        localStorage.setItem("tetrisGameData", JSON.stringify(gameData))
+      } catch (error) {
+        console.error("Error saving game data:", error)
+      }
+    }
+  }, [gameOver, score, highScore])
 
   // Update the preview when the next tetromino changes
   useEffect(() => {
@@ -284,6 +327,7 @@ export const useTetris = () => {
     board: renderBoard(),
     preview,
     score,
+    highScore,
     level,
     lines,
     gameOver,

@@ -13,6 +13,7 @@ export default function TetrisGame() {
     board,
     preview,
     score,
+    highScore,
     level,
     lines,
     gameOver,
@@ -114,6 +115,8 @@ export default function TetrisGame() {
               <div className="grid grid-cols-2 gap-2">
                 <div className="text-white">Score:</div>
                 <div className="text-white font-bold text-right">{score}</div>
+                <div className="text-white">High Score:</div>
+                <div className="text-white font-bold text-right">{highScore}</div>
                 <div className="text-white">Level:</div>
                 <div className="text-white font-bold text-right">{level}</div>
                 <div className="text-white">Lines:</div>
@@ -122,7 +125,7 @@ export default function TetrisGame() {
 
               <div className="mt-2">
                 <h3 className="text-white mb-2">Next Piece:</h3>
-                <div className="bg-gray-900 p-2 rounded-md">
+                <div className="bg-gray-900 p-2 rounded-md flex justify-center">
                   <TetrisBoard board={preview} isPreview={true} />
                 </div>
               </div>

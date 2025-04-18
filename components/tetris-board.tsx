@@ -18,10 +18,16 @@ const COLORS = [
 
 const TetrisBoard = memo(function TetrisBoard({ board, isPreview = false }: TetrisBoardProps) {
   const cellSize = isPreview ? "w-5 h-5" : "w-6 h-6 sm:w-8 sm:h-8"
-  const cols = isPreview ? board[0].length : 10
+  const gridGap = "gap-[1px]"
+  const cols = board[0].length
 
   return (
-    <div className={`grid grid-cols-${cols} bg-gray-900`} style={{ gap: "1px" }}>
+    <div
+      className={`grid ${gridGap} bg-gray-900`}
+      style={{
+        gridTemplateColumns: `repeat(${cols}, minmax(0, 1fr))`,
+      }}
+    >
       {board.map((row, rowIndex) =>
         row.map((cell, colIndex) => (
           <div
